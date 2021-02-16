@@ -2,7 +2,7 @@ package tracker
 
 import "time"
 
-// User
+// User for storing all username related details
 type User struct {
 	UserName string
 }
@@ -47,7 +47,7 @@ type CommitTracker struct {
 	Email         string         `json:"email"`
 	TotalCommits  int            `json:"total_commits"`
 	CommitDetails []CommitDetail `json:"commit_links"`
-	UserName      string         `json:"-"`
+	UserName      string         `json:"user_name"`
 	WeekNum       int            `json:"week_num"`
 	ProfilePic    string         `json:"profilepic"`
 }

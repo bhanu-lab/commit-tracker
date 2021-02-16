@@ -57,7 +57,7 @@ func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) []byt
 			err = json.Unmarshal(body, &commits)
 			if err != nil {
 				fmt.Printf("error occured while unmarshalling %#v \n", err)
-				panic(err)
+				//panic(err)
 			}
 			fmt.Printf("unmarshalled commit info %#v \n\n\n", commits)
 			for _, commit := range commits {
@@ -96,9 +96,9 @@ func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) []byt
 	for _, weekCommit := range weekCommits {
 		commitTracker.Email = weekCommit.Commit.Author.Email
 		commitTracker.ProfilePic = weekCommit.Author.ProfilePic
-
 		commitDetail := CommitDetail{}
-		commitDetail.Link = "https://github.com/" + commitTracker.UserName + "/" + weekCommit.RepoName + "/commit/" + weekCommit.Sha
+		//commitDetail.Link = "https://github.com/" + commitTracker.UserName + "/" + weekCommit.RepoName + "/commit/" + weekCommit.Sha
+		commitDetail.Link = weekCommit.Link
 		commitDetail.CommitDate = weekCommit.Commit.CommitDate
 		commitDetail.Sha = weekCommit.Sha
 		commitDetail.RepoName = weekCommit.RepoName
