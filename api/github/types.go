@@ -14,6 +14,12 @@ type Repo struct {
 	DefaultBranch string `json:"default_branch"`
 }
 
+// Struct for storing html page details
+type Page struct {
+	Title	 string
+	Body	[]byte
+}
+
 // CommitInfo each commit info
 type CommitInfo struct {
 	Sha      string `json:"sha"`
