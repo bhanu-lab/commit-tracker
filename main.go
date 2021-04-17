@@ -5,12 +5,21 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"github.com/gorilla/mux"
+	"net/http"
+	"encoding/json"
 )
 
 func main() {
-	// Read All User Names for whom github commits has to be tracked
-	// to-do
-	whichWeek := os.Args[1]
+	r := mux.NewRouter()
+	r.HandleFunc("/week/{week}", WeeklyCommits).Methods("GET")
+	http.ListenAndServe(":8080", r)
+}
+
+// WeeklyCommits takes for which week number to scan commits
+func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	whichWeek := vars["week"]
 	var users []tracker.User
 
 	file, err := os.Open("users.csv")
@@ -26,11 +35,6 @@ func main() {
 		users = append(users, tracker.User{UserName: userName[0]})
 	}
 	var allUsers []string
-	// Get All  Repos for which user is the owner
-	//user := tracker.User{UserName: userNames}
-	//user := tracker.User{UserName: "bhanu-lab"}
-	//user := tracker.User{UserName: "RajeshReddyG"}
-	//user := tracker.User{UserName: "Gundupalli"}
 
 	for _, user := range users {
 		repos := tracker.GetAllReposOfUser(user)
@@ -44,12 +48,11 @@ func main() {
 		//fmt.Printf("All Commits for this Week %s \n", string(allCommits))
 		allUsers = append(allUsers, string(allCommits))
 	}
-	//}
-	//}
 	fmt.Println("***************ALL USERS***********************")
-	for _, user := range allUsers {
+	/*for _, user := range allUsers {
 		fmt.Printf("All Commits for this Week %s \n", user)
-	}
+	}*/
 	fmt.Println("************************DONE*******************")
-
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(allUsers)
 }
