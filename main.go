@@ -3,12 +3,13 @@ package main
 import (
 	tracker "commit-tracker/api/github"
 	"encoding/csv"
-	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -40,24 +41,25 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 
 	for _, user := range users {
 		repos := tracker.GetAllReposOfUser(user)
-		//repos := []tracker.Repo{tracker.Repo{Name: "NetworkScanner"}}
 
 		// for each repo created by the user check for any new commits
-		//for _, repo := range repos {
-		//if repo.Name == "NetworkScanner" {
 		allCommits, commitTracker := tracker.GetAllCommitsForRepo(user.UserName, repos, whichWeek)
 
-		//fmt.Printf("All Commits for this Week %s \n", string(allCommits))
 		allUsers = append(allUsers, string(allCommits))
 		commits = append(commits, commitTracker)
 	}
 	fmt.Println("***************ALL USERS***********************")
-	/*for _, user := range allUsers {
-		fmt.Printf("All Commits for this Week %s \n", user)
-	}*/
 	fmt.Println("************************DONE*******************")
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(allUsers)
 	template, _ := template.ParseFiles("tracker.html")
-	template.Execute(os.Stdout, commits)
+	template.Execute(w, commits)
+}
+
+// CreateFile creates file and returns file pointer and error if any
+func CreateFile(fileName string) (*os.File, error) {
+	f, err := os.Create(fileName)
+	if err != nil {
+		log.Println("create file: ", err)
+		return nil, err
+	}
+	return f, nil
 }
