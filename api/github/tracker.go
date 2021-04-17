@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"os"
 )
 
 const (
@@ -16,8 +17,6 @@ const (
 	// CommitsAPI is the API for fetching commits made by user for a particular repository
 	CommitsAPI = "https://api.github.com/repos/:user/{repositoryName}/commits?author=:user"
 
-	// AuthKey for github APi TODO: to be delted
-	AuthKey = "token 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"
 )
 
 // GetAllReposOfUser gets all repositories for the user
@@ -119,6 +118,7 @@ func GetReponse(filledAPI string) ([]byte, error) {
 	//resp, err := http.Get(filledAPI)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", filledAPI, nil)
+	AuthKey := os.Getenv("GITHUB")
 	req.Header.Set("Authorization", AuthKey)
 	resp, err := client.Do(req)
 
