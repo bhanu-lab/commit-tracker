@@ -17,7 +17,7 @@ const (
 	CommitsAPI = "https://api.github.com/repos/:user/{repositoryName}/commits?author=:user"
 
 	// AuthKey for github APi TODO: to be delted
-	AuthKey = "token 27ab4ae1210e047b4bcf16f4373efafb6793174d"
+	AuthKey = "token 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"
 )
 
 // GetAllReposOfUser gets all repositories for the user
