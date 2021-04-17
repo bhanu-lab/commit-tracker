@@ -17,7 +17,7 @@ const (
 	CommitsAPI = "https://api.github.com/repos/:user/{repositoryName}/commits?author=:user"
 
 	// AuthKey for github APi TODO: to be delted
-	AuthKey = "token 27ab4ae1210e047b4bcf16f4373efafb6793174d"
+	AuthKey = "token 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"
 )
 
 // GetAllReposOfUser gets all repositories for the user
@@ -38,7 +38,7 @@ func GetAllReposOfUser(user User) []Repo {
 }
 
 // GetAllCommitsForRepo get all commits for the repository name and owner
-func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) []byte {
+func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) ([]byte, CommitTracker) {
 	var commits []CommitInfo
 	var weekCommits []CommitInfo
 	var commitTracker CommitTracker
@@ -111,7 +111,7 @@ func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) []byt
 		fmt.Println("failed while converting data to json")
 		panic(err)
 	}
-	return jsonData
+	return jsonData, commitTracker
 }
 
 // GetReponse returns response for a request
