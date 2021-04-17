@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+sudo systemctl stop commit-tracker
+sudo systemctl daemon-reload
+sudo systemctl start commit-tracker

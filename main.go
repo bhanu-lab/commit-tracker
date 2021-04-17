@@ -39,12 +39,12 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 	var allUsers []string
 	var commits []tracker.CommitTracker
 
-	for _, user := range users {
+	for i, user := range users {
 		repos := tracker.GetAllReposOfUser(user)
 
 		// for each repo created by the user check for any new commits
 		allCommits, commitTracker := tracker.GetAllCommitsForRepo(user.UserName, repos, whichWeek)
-
+		commitTracker.Sno = i
 		allUsers = append(allUsers, string(allCommits))
 		commits = append(commits, commitTracker)
 	}
