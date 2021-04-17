@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"time"
-	"os"
 )
 
 const (
@@ -16,7 +16,6 @@ const (
 
 	// CommitsAPI is the API for fetching commits made by user for a particular repository
 	CommitsAPI = "https://api.github.com/repos/:user/{repositoryName}/commits?author=:user"
-
 )
 
 // GetAllReposOfUser gets all repositories for the user
@@ -119,6 +118,7 @@ func GetReponse(filledAPI string) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", filledAPI, nil)
 	AuthKey := os.Getenv("GITHUB")
+	fmt.Printf("Received Authorized key : %v \n", AuthKey)
 	req.Header.Set("Authorization", AuthKey)
 	resp, err := client.Do(req)
 
@@ -130,7 +130,7 @@ func GetReponse(filledAPI string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Printf("Response received is %#v \n", string(body))
+	fmt.Printf("Response received is %#v \n", string(body))
 	return body, nil
 }
 
