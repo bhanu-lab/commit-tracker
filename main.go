@@ -3,11 +3,12 @@ package main
 import (
 	tracker "commit-tracker/api/github"
 	"encoding/csv"
-	"fmt"
-	"os"
-	"github.com/gorilla/mux"
-	"net/http"
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
+	"html/template"
+	"net/http"
+	"os"
 )
 
 func main() {
@@ -35,6 +36,7 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 		users = append(users, tracker.User{UserName: userName[0]})
 	}
 	var allUsers []string
+	var commits []tracker.CommitTracker
 
 	for _, user := range users {
 		repos := tracker.GetAllReposOfUser(user)
@@ -43,10 +45,11 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 		// for each repo created by the user check for any new commits
 		//for _, repo := range repos {
 		//if repo.Name == "NetworkScanner" {
-		allCommits := tracker.GetAllCommitsForRepo(user.UserName, repos, whichWeek)
+		allCommits, commitTracker := tracker.GetAllCommitsForRepo(user.UserName, repos, whichWeek)
 
 		//fmt.Printf("All Commits for this Week %s \n", string(allCommits))
 		allUsers = append(allUsers, string(allCommits))
+		commits = append(commits, commitTracker)
 	}
 	fmt.Println("***************ALL USERS***********************")
 	/*for _, user := range allUsers {
@@ -55,4 +58,6 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("************************DONE*******************")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(allUsers)
+	template, _ := template.ParseFiles("tracker.html")
+	template.Execute(os.Stdout, commits)
 }

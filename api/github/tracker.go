@@ -38,7 +38,7 @@ func GetAllReposOfUser(user User) []Repo {
 }
 
 // GetAllCommitsForRepo get all commits for the repository name and owner
-func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) []byte {
+func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) ([]byte, CommitTracker) {
 	var commits []CommitInfo
 	var weekCommits []CommitInfo
 	var commitTracker CommitTracker
@@ -111,7 +111,7 @@ func GetAllCommitsForRepo(userName string, repos []Repo, whichWeek string) []byt
 		fmt.Println("failed while converting data to json")
 		panic(err)
 	}
-	return jsonData
+	return jsonData, commitTracker
 }
 
 // GetReponse returns response for a request
