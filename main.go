@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
+	"sync"
 
 	"github.com/gorilla/mux"
 )
@@ -20,6 +22,7 @@ func main() {
 
 // WeeklyCommits takes for which week number to scan commits
 func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
+	var wg sync.WaitGroup
 	vars := mux.Vars(r)
 	whichWeek := vars["week"]
 	var users []tracker.User
@@ -40,18 +43,25 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 	var commits []tracker.CommitTracker
 
 	for i, user := range users {
-		repos := tracker.GetAllReposOfUser(user)
-
-		// for each repo created by the user check for any new commits
-		allCommits, commitTracker := tracker.GetAllCommitsForRepo(user.UserName, repos, whichWeek)
-		commitTracker.Sno = i
-		allUsers = append(allUsers, string(allCommits))
-		commits = append(commits, commitTracker)
+		wg.Add(1)
+		go CommitTrackerWorker(user, whichWeek, i, allUsers, &commits, &wg)
 	}
-	fmt.Println("***************ALL USERS***********************")
-	fmt.Println("************************DONE*******************")
+	wg.Wait()
+	SortBasedOnTotalCommits(commits)
 	template, _ := template.ParseFiles("tracker.html")
 	template.Execute(w, commits)
+}
+
+// CommitTrackerWorker worker function to spawn go routines
+func CommitTrackerWorker(user tracker.User, whichWeek string, i int, allUsers []string, commits *[]tracker.CommitTracker, wg *sync.WaitGroup) {
+	defer wg.Done()
+	repos := tracker.GetAllReposOfUser(user)
+
+	// for each repo created by the user check for any new commits
+	allCommits, commitTracker := tracker.GetAllCommitsForRepo(user.UserName, repos, whichWeek)
+	commitTracker.Sno = i
+	allUsers = append(allUsers, string(allCommits))
+	*commits = append(*commits, commitTracker)
 }
 
 // CreateFile creates file and returns file pointer and error if any
@@ -62,4 +72,11 @@ func CreateFile(fileName string) (*os.File, error) {
 		return nil, err
 	}
 	return f, nil
+}
+
+// SortBasedOnTotalCommits sorts based on total number of commits
+func SortBasedOnTotalCommits(commits []tracker.CommitTracker) {
+	sort.SliceStable(commits, func(i, j int) bool {
+		return commits[i].TotalCommits > commits[j].TotalCommits
+	})
 }
