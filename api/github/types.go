@@ -16,8 +16,8 @@ type Repo struct {
 
 // Struct for storing html page details
 type Page struct {
-	Title	 string
-	Body	[]byte
+	Title string
+	Body  []byte
 }
 
 // CommitInfo each commit info
@@ -56,6 +56,7 @@ type CommitTracker struct {
 	UserName      string         `json:"user_name"`
 	WeekNum       int            `json:"week_num"`
 	ProfilePic    string         `json:"profilepic"`
+	Sno           int            `json:"s_no"`
 }
 
 //CommitDetail each commit detail
