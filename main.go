@@ -50,7 +50,7 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("***************ALL USERS***********************")
 	fmt.Println("************************DONE*******************")
-	template, _ := template.ParseFiles("tracker.html")
+	template, _ := template.ParseFiles("html/tracker.html")
 	template.Execute(w, commits)
 }
 
