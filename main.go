@@ -48,7 +48,7 @@ func WeeklyCommits(w http.ResponseWriter, r *http.Request) {
 	}
 	wg.Wait()
 	SortBasedOnTotalCommits(commits)
-	template, _ := template.ParseFiles("tracker.html")
+	template, _ := template.ParseFiles("html/tracker.html")
 	template.Execute(w, commits)
 }
 
