@@ -118,7 +118,6 @@ func GetReponse(filledAPI string) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", filledAPI, nil)
 	AuthKey := os.Getenv("GITHUB")
-	fmt.Printf("Received Authorized key : %v \n", AuthKey)
 	req.Header.Set("Authorization", AuthKey)
 	resp, err := client.Do(req)
 

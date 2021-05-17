@@ -17,6 +17,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/week/{week}", WeeklyCommits).Methods("GET")
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/static/"))))
 	http.ListenAndServe(":8080", r)
 }
 
